@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TestGroupLookup>
+  <TestGroup Name="Outside Diameter">
+    <Test Name="Barb OD" />
+    <Test Name="Barrel OD" />
+    <Test Name="Head OD" />
+    <Test Name="Lock Bead OD" />
+    <Test Name="Min Flat Dia" />
+    <Test Name="Nose OD" />
+  </TestGroup>
+  <TestGroup Name="Widths">
+    <Test Name="Head Width" />
+    <Test Name="Lock Bead Loc" />
+    <Test Name="Nose Loc" />
+    <Test Name="Loc Bead Loc" />
+    <Test Name="Face to Bead" />
+  </TestGroup>
+</TestGroupLookup>
