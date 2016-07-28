@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,8 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ConfigurationReader.cs" />
     <Compile Include="Config\SimulationConfig.cs" />
     <Compile Include="Dto\KeyenceMessage.cs" />
+    <Compile Include="Factories\SimulationFactory.cs" />
+    <Compile Include="Interfaces\IConfigurationReader.cs" />
     <Compile Include="Interfaces\IKeyenceMessage.cs" />
     <Compile Include="Interfaces\IKeyenceMessageManager.cs" />
     <Compile Include="Interfaces\ISimulationManager.cs" />
@@ -80,6 +84,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
