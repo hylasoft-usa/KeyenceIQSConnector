@@ -81,8 +81,8 @@ namespace Keyence2IQS
             {
                 DATA = DATA.Remove(0, s.Length).Trim(NL.ToCharArray());
                 String[] Fields = (ConfigurationManager.AppSettings["Delimiter"].Equals("\\t"))
-                        ? s.Replace('\t',';').Split(new []{";"}, StringSplitOptions.RemoveEmptyEntries)
-                        : s.Split(new []{ConfigurationManager.AppSettings["Delimiter"]}, StringSplitOptions.RemoveEmptyEntries);
+                        ? s.Replace('\t', ';').Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
+                        : s.Split(new[] { ConfigurationManager.AppSettings["Delimiter"] }, StringSplitOptions.RemoveEmptyEntries);
                 switch (Fields[0])//Check tag of data line:
                 {
                     case "ST"://Start of data: Make new Table.
@@ -142,7 +142,7 @@ namespace Keyence2IQS
                         {
                             failFlag = true;
                             T.Value = v;
-                        //    T.Unit = Fields[3];
+                            //    T.Unit = Fields[3];
                             T.Name = Fields[4];
                             for (int i = 5; i < (Fields.Length - 5); i++)
                             {
@@ -164,7 +164,7 @@ namespace Keyence2IQS
                         }
                         if (ConfigurationManager.AppSettings["GetIQSGroups"].ToLower().Equals("false"))
                         {
-                        //    T.Group = LookupTestGroupXML(T.Name);
+                            //    T.Group = LookupTestGroupXML(T.Name);
                         }
                         //TABLE.Tests.Add(T);
                         cur_test++;
@@ -272,7 +272,7 @@ namespace Keyence2IQS
                 if (result.Contains(NL + "EN"))//Activated when an "EN" tag has been encountered.
                 {
                     //Log raw collected data.
-                    Log_String = DateTime.Now + ": Collected Data" +NL+ result;
+                    Log_String = DateTime.Now + ": Collected Data" + NL + result;
                     Back_Thread.ReportProgress(1);
                     System.Threading.Thread.Sleep(100);
                     SUBGROUP = Parse(result);
@@ -316,16 +316,8 @@ namespace Keyence2IQS
         /// </summary>
         private void bnStop_Click(object sender, EventArgs e)
         {
-            if (EXP < DateTime.Now)
-            {
-                MessageBox.Show("Sorry, but this application is past its expiration date.  the application will now exit.");
-                this.Close();
-            }
-            else
-            {
-                collect_data = false;
-                send_socket.Close();
-            }
+            collect_data = false;
+            send_socket.Close();
         }
 
         /// <summary>
@@ -333,18 +325,10 @@ namespace Keyence2IQS
         /// </summary>
         private void bnQuit_Click(object sender, EventArgs e)
         {
-            if (EXP < DateTime.Now)
+            if (collect_data == true)
             {
-                MessageBox.Show("Sorry, but this application is past its expiration date.  the application will now exit.");
-                this.Close();
-            }
-            else
-            {
-                if (collect_data == true)
-                {
-                    MessageBox.Show("Still collecting data!  Please disable data collection before quitting");
-                    return;
-                }
+                MessageBox.Show("Still collecting data!  Please disable data collection before quitting");
+                return;
             }
             Close();
         }
@@ -354,20 +338,12 @@ namespace Keyence2IQS
         /// </summary>
         private void bnStart_Click(object sender, EventArgs e)
         {
-            if (EXP < DateTime.Now)
-            {
-                MessageBox.Show("Sorry, but this application is past its expiration date.  the application will now exit.");
-                this.Close();
-            }
-            else
-            {
-                lbLog.Items.Add(DateTime.Now + ": Attempting to collect data from Keyence Machine.");
-                File.AppendAllText("Log.txt", DateTime.Now + ": Attempting to collect data from Keyence Machine." + NL);
-                Back_Thread.RunWorkerAsync();
-                bnStart.Visible = false;
-                bnStop.Visible = true;
-                bnQuit.Enabled = false;
-            }
+            lbLog.Items.Add(DateTime.Now + ": Attempting to collect data from Keyence Machine.");
+            File.AppendAllText("Log.txt", DateTime.Now + ": Attempting to collect data from Keyence Machine." + NL);
+            Back_Thread.RunWorkerAsync();
+            bnStart.Visible = false;
+            bnStop.Visible = true;
+            bnQuit.Enabled = false;
         }
 
         /// <summary>
@@ -393,17 +369,9 @@ namespace Keyence2IQS
         /// </summary>
         private void notifyIcon_MouseDoubleClick(object sender, EventArgs e)
         {
-            if (EXP < DateTime.Now)
-            {
-                MessageBox.Show("Sorry, but this application is past its expiration date.  the application will now exit.");
-                this.Close();
-            }
-            else
-            {
-                Show();
-                WindowState = FormWindowState.Normal;
-                niTray.Visible = false;
-            }
+            Show();
+            WindowState = FormWindowState.Normal;
+            niTray.Visible = false;
         }
 
         /// <summary>
@@ -412,7 +380,7 @@ namespace Keyence2IQS
         private void Stop_Collection(object sender, RunWorkerCompletedEventArgs e)
         {
             lbLog.Items.Add(DateTime.Now + ": Data collection halted.");
-            File.AppendAllText("Log.txt",DateTime.Now + ": Data collection halted."+NL);
+            File.AppendAllText("Log.txt", DateTime.Now + ": Data collection halted." + NL);
             bnStop.Visible = false;
             bnStart.Visible = true;
             bnQuit.Enabled = true;
@@ -450,10 +418,10 @@ namespace Keyence2IQS
                 //var prcsG = LookupProcessGroup(SG.Process);
                 //for (int i = 0; i < SG.Tests.Count; i++)//Turn each test into a CSV line.
                 {
-                //    Test T = SG.Tests[i];
-                //    var testG = LookupTestGroup(T.Name);
-                //    if (testG.Equals(string.Empty)) continue;
-                //    S.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", (i + 1), T.Value, T.Name, T.Target, T.USL, T.LSL, testG, SG.Part, partG, SG.Process, prcsG, NL);
+                    //    Test T = SG.Tests[i];
+                    //    var testG = LookupTestGroup(T.Name);
+                    //    if (testG.Equals(string.Empty)) continue;
+                    //    S.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", (i + 1), T.Value, T.Name, T.Target, T.USL, T.LSL, testG, SG.Part, partG, SG.Process, prcsG, NL);
                     //"Test_Number,Test_Value,Test_Name,Test_Target_Value,Test_Upper_Tolerance,Test_Lower_Tolerance,Test_Part,Test_Process,\n"
                 }
             }
@@ -464,7 +432,7 @@ namespace Keyence2IQS
                 //    Test T = SG.Tests[i];
                 //    if (T.Group.Equals(string.Empty)) continue;
                 //    S.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", (i + 1), T.Value, T.Name, T.Target, T.USL, T.LSL, T.Group, SG.Part, SG.Process, NL);
-                    //"Test_Number,Test_Value,Test_Name,Test_Target_Value,Test_Upper_Tolerance,Test_Lower_Tolerance,Test_Part,Test_Process,\n"
+                //"Test_Number,Test_Value,Test_Name,Test_Target_Value,Test_Upper_Tolerance,Test_Lower_Tolerance,Test_Part,Test_Process,\n"
                 //}
             }
             //string filename = ConfigurationManager.AppSettings["Dest"].Replace("%process", SG.Process).Replace("%part", SG.Part);
@@ -536,127 +504,120 @@ namespace Keyence2IQS
         /// </summary>
         private void InitializeComponent()
         {
-      this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(dlgMain));
-      this.bnStart = new System.Windows.Forms.Button();
-      this.bnQuit = new System.Windows.Forms.Button();
-      this.lbLog = new System.Windows.Forms.ListBox();
-      this.niTray = new System.Windows.Forms.NotifyIcon(this.components);
-      this.bnStop = new System.Windows.Forms.Button();
-      this.bnProc = new System.Windows.Forms.Button();
-      this.tm_time = new System.Windows.Forms.Timer(this.components);
-      this.bnPartGroup = new System.Windows.Forms.Button();
-      this.SuspendLayout();
-      // 
-      // bnStart
-      // 
-      this.bnStart.Location = new System.Drawing.Point(12, 12);
-      this.bnStart.Name = "bnStart";
-      this.bnStart.Size = new System.Drawing.Size(150, 23);
-      this.bnStart.TabIndex = 0;
-      this.bnStart.Text = "Start";
-      this.bnStart.UseVisualStyleBackColor = true;
-      this.bnStart.Click += new System.EventHandler(this.bnStart_Click);
-      // 
-      // bnQuit
-      // 
-      this.bnQuit.Location = new System.Drawing.Point(12, 334);
-      this.bnQuit.Name = "bnQuit";
-      this.bnQuit.Size = new System.Drawing.Size(150, 23);
-      this.bnQuit.TabIndex = 1;
-      this.bnQuit.Text = "Quit";
-      this.bnQuit.UseVisualStyleBackColor = true;
-      this.bnQuit.Click += new System.EventHandler(this.bnQuit_Click);
-      // 
-      // lbLog
-      // 
-      this.lbLog.FormattingEnabled = true;
-      this.lbLog.HorizontalScrollbar = true;
-      this.lbLog.Items.AddRange(new object[] {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(dlgMain));
+            this.bnStart = new System.Windows.Forms.Button();
+            this.bnQuit = new System.Windows.Forms.Button();
+            this.lbLog = new System.Windows.Forms.ListBox();
+            this.niTray = new System.Windows.Forms.NotifyIcon(this.components);
+            this.bnStop = new System.Windows.Forms.Button();
+            this.bnProc = new System.Windows.Forms.Button();
+            this.tm_time = new System.Windows.Forms.Timer(this.components);
+            this.bnPartGroup = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // bnStart
+            // 
+            this.bnStart.Location = new System.Drawing.Point(12, 12);
+            this.bnStart.Name = "bnStart";
+            this.bnStart.Size = new System.Drawing.Size(150, 23);
+            this.bnStart.TabIndex = 0;
+            this.bnStart.Text = "Start";
+            this.bnStart.UseVisualStyleBackColor = true;
+            this.bnStart.Click += new System.EventHandler(this.bnStart_Click);
+            // 
+            // bnQuit
+            // 
+            this.bnQuit.Location = new System.Drawing.Point(12, 334);
+            this.bnQuit.Name = "bnQuit";
+            this.bnQuit.Size = new System.Drawing.Size(150, 23);
+            this.bnQuit.TabIndex = 1;
+            this.bnQuit.Text = "Quit";
+            this.bnQuit.UseVisualStyleBackColor = true;
+            this.bnQuit.Click += new System.EventHandler(this.bnQuit_Click);
+            // 
+            // lbLog
+            // 
+            this.lbLog.FormattingEnabled = true;
+            this.lbLog.HorizontalScrollbar = true;
+            this.lbLog.ItemHeight = 16;
+            this.lbLog.Items.AddRange(new object[] {
             "                              --------------------EVENT LOG--------------------"});
-      this.lbLog.Location = new System.Drawing.Point(168, 15);
-      this.lbLog.Name = "lbLog";
-      this.lbLog.Size = new System.Drawing.Size(372, 342);
-      this.lbLog.TabIndex = 2;
-      this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
-      // 
-      // niTray
-      // 
-      this.niTray.BalloonTipText = "Double-Click to restore.";
-      this.niTray.BalloonTipTitle = "Minimized to system tray.";
-      this.niTray.Icon = ((System.Drawing.Icon)(resources.GetObject("niTray.Icon")));
-      this.niTray.Text = "notifyIcon1";
-      this.niTray.Visible = true;
-      this.niTray.DoubleClick += new System.EventHandler(this.notifyIcon_MouseDoubleClick);
-      // 
-      // bnStop
-      // 
-      this.bnStop.Location = new System.Drawing.Point(12, 12);
-      this.bnStop.Name = "bnStop";
-      this.bnStop.Size = new System.Drawing.Size(150, 23);
-      this.bnStop.TabIndex = 3;
-      this.bnStop.Text = "Stop";
-      this.bnStop.UseVisualStyleBackColor = true;
-      this.bnStop.Visible = false;
-      this.bnStop.Click += new System.EventHandler(this.bnStop_Click);
-      // 
-      // bnProc
-      // 
-      this.bnProc.Location = new System.Drawing.Point(12, 41);
-      this.bnProc.Name = "bnProc";
-      this.bnProc.Size = new System.Drawing.Size(150, 23);
-      this.bnProc.TabIndex = 4;
-      this.bnProc.Text = "Show Processes";
-      this.bnProc.UseVisualStyleBackColor = true;
-      this.bnProc.Visible = false;
-      this.bnProc.Click += new System.EventHandler(this.bnProc_Click);
-      // 
-      // tm_time
-      // 
-      this.tm_time.Enabled = true;
-      this.tm_time.Interval = 3600000;
-      this.tm_time.Tick += new System.EventHandler(this.tm_time_Tick);
-      // 
-      // bnPartGroup
-      // 
-      this.bnPartGroup.Location = new System.Drawing.Point(12, 70);
-      this.bnPartGroup.Name = "bnPartGroup";
-      this.bnPartGroup.Size = new System.Drawing.Size(150, 23);
-      this.bnPartGroup.TabIndex = 5;
-      this.bnPartGroup.Text = "Show Processes";
-      this.bnPartGroup.UseVisualStyleBackColor = true;
-      this.bnPartGroup.Visible = false;
-      this.bnPartGroup.Click += new System.EventHandler(this.bnShiftClick);
-      // 
-      // dlgMain
-      // 
-      this.ClientSize = new System.Drawing.Size(552, 378);
-      this.Controls.Add(this.bnPartGroup);
-      this.Controls.Add(this.bnProc);
-      this.Controls.Add(this.bnStop);
-      this.Controls.Add(this.lbLog);
-      this.Controls.Add(this.bnQuit);
-      this.Controls.Add(this.bnStart);
-      this.Name = "dlgMain";
-      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-      this.Text = "Keyence Automatic Data Collector";
-      this.Resize += new System.EventHandler(this.frmMain_Resize);
-      this.ResumeLayout(false);
+            this.lbLog.Location = new System.Drawing.Point(168, 15);
+            this.lbLog.Name = "lbLog";
+            this.lbLog.Size = new System.Drawing.Size(372, 340);
+            this.lbLog.TabIndex = 2;
+            this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
+            // 
+            // niTray
+            // 
+            this.niTray.BalloonTipText = "Double-Click to restore.";
+            this.niTray.BalloonTipTitle = "Minimized to system tray.";
+            this.niTray.Icon = ((System.Drawing.Icon)(resources.GetObject("niTray.Icon")));
+            this.niTray.Text = "notifyIcon1";
+            this.niTray.Visible = true;
+            this.niTray.DoubleClick += new System.EventHandler(this.notifyIcon_MouseDoubleClick);
+            // 
+            // bnStop
+            // 
+            this.bnStop.Location = new System.Drawing.Point(12, 12);
+            this.bnStop.Name = "bnStop";
+            this.bnStop.Size = new System.Drawing.Size(150, 23);
+            this.bnStop.TabIndex = 3;
+            this.bnStop.Text = "Stop";
+            this.bnStop.UseVisualStyleBackColor = true;
+            this.bnStop.Visible = false;
+            this.bnStop.Click += new System.EventHandler(this.bnStop_Click);
+            // 
+            // bnProc
+            // 
+            this.bnProc.Location = new System.Drawing.Point(12, 41);
+            this.bnProc.Name = "bnProc";
+            this.bnProc.Size = new System.Drawing.Size(150, 23);
+            this.bnProc.TabIndex = 4;
+            this.bnProc.Text = "Show Processes";
+            this.bnProc.UseVisualStyleBackColor = true;
+            this.bnProc.Visible = false;
+            this.bnProc.Click += new System.EventHandler(this.bnProc_Click);
+            // 
+            // tm_time
+            // 
+            this.tm_time.Interval = 3600000;
+            this.tm_time.Tick += new System.EventHandler(this.tm_time_Tick);
+            // 
+            // bnPartGroup
+            // 
+            this.bnPartGroup.Location = new System.Drawing.Point(12, 70);
+            this.bnPartGroup.Name = "bnPartGroup";
+            this.bnPartGroup.Size = new System.Drawing.Size(150, 23);
+            this.bnPartGroup.TabIndex = 5;
+            this.bnPartGroup.Text = "Show Processes";
+            this.bnPartGroup.UseVisualStyleBackColor = true;
+            this.bnPartGroup.Visible = false;
+            this.bnPartGroup.Click += new System.EventHandler(this.bnShiftClick);
+            // 
+            // dlgMain
+            // 
+            this.ClientSize = new System.Drawing.Size(552, 378);
+            this.Controls.Add(this.bnPartGroup);
+            this.Controls.Add(this.bnProc);
+            this.Controls.Add(this.bnStop);
+            this.Controls.Add(this.lbLog);
+            this.Controls.Add(this.bnQuit);
+            this.Controls.Add(this.bnStart);
+            this.Name = "dlgMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Keyence Automatic Data Collector";
+            this.Load += new System.EventHandler(this.dlgMain_Load);
+            this.Resize += new System.EventHandler(this.frmMain_Resize);
+            this.ResumeLayout(false);
 
         }
 
         private void bnProc_Click(object sender, EventArgs e)
         {
-            if (EXP < DateTime.Now)
-            {
-                MessageBox.Show("Sorry, but this application is past its expiration date.  the application will now exit.");
-                this.Close();
-            }
-            else
-            {
-                var prcs = new dlgShift();
-                prcs.ShowDialog();
-            }
+            var prcs = new dlgShift();
+            prcs.ShowDialog();
         }
 
         private void tm_time_Tick(object sender, EventArgs e)
@@ -675,16 +636,13 @@ namespace Keyence2IQS
 
         private void bnShiftClick(object sender, EventArgs e)
         {
-          if (EXP < DateTime.Now)
-          {
-            MessageBox.Show("Sorry, but this application is past its expiration date.  the application will now exit.");
-            this.Close();
-          }
-          else
-          {
             var prtshift = new dlgShift();
             prtshift.ShowDialog();
-          }
+        }
+
+        private void dlgMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
