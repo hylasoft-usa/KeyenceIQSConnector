@@ -47,7 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\SimulationConfig.cs" />
+    <Compile Include="Dto\KeyenceMessage.cs" />
+    <Compile Include="Interfaces\IKeyenceMessage.cs" />
+    <Compile Include="Interfaces\IKeyenceMessageManager.cs" />
+    <Compile Include="Interfaces\ISimulationManager.cs" />
+    <Compile Include="Interfaces\ISocketManager.cs" />
     <Compile Include="KeyenceSimulation.cs" />
+    <Compile Include="Managers\KeyenceMessageManager.cs" />
+    <Compile Include="Managers\SimulationManager.cs" />
+    <Compile Include="Managers\SocketManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
