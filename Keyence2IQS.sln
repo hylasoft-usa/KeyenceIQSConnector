@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keyence2IQS", "Keyence2IQS.csproj", "{B621D7CF-F89D-492E-BB8B-94361CF22D31}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HylaSoftFusion_Install", "HylaSoftFusion_Install\HylaSoftFusion_Install.vdproj", "{6EF7D688-4514-42B6-A74D-F9B6164A81CB}"
-EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "WixInstaller", "WixInstaller\WixInstaller.wixproj", "{9F6DB2DF-D631-4CDE-9637-D1821B6A0121}"
 EndProject
 Global
@@ -31,18 +29,6 @@ Global
 		{B621D7CF-F89D-492E-BB8B-94361CF22D31}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B621D7CF-F89D-492E-BB8B-94361CF22D31}.Release|x86.ActiveCfg = Release|x86
 		{B621D7CF-F89D-492E-BB8B-94361CF22D31}.Release|x86.Build.0 = Release|x86
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Debug|Any CPU.ActiveCfg = Debug
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Debug|Any CPU.Build.0 = Debug
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Debug|Mixed Platforms.Build.0 = Debug
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Debug|x86.ActiveCfg = Debug
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Debug|x86.Build.0 = Debug
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Release|Any CPU.ActiveCfg = Release
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Release|Any CPU.Build.0 = Release
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Release|Mixed Platforms.ActiveCfg = Release
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Release|Mixed Platforms.Build.0 = Release
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Release|x86.ActiveCfg = Release
-		{6EF7D688-4514-42B6-A74D-F9B6164A81CB}.Release|x86.Build.0 = Release
 		{9F6DB2DF-D631-4CDE-9637-D1821B6A0121}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{9F6DB2DF-D631-4CDE-9637-D1821B6A0121}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{9F6DB2DF-D631-4CDE-9637-D1821B6A0121}.Debug|Mixed Platforms.Build.0 = Debug|x86

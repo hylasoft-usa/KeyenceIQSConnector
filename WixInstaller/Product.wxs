@@ -12,11 +12,30 @@
     <Feature Id="Logs" Title="LogsFolder" Level="1">
       <ComponentRef Id="Logs"/>
     </Feature>
-  
+    <Feature Id="DesktopShortcut" Title="SetupProject1" Level="1">
+      <ComponentRef Id="AppkicationShortcutDesktop" />
+    </Feature>
 	</Product>
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="DesktopFolder" Name="Desktop">
+        <Component Id="AppkicationShortcutDesktop" Guid="*">
+          <Shortcut Id="ApplicationDesktopShortcut"
+              Name="HylasoftFusion"
+              Description="Comment field in your shortcut"
+              Target="[INSTALLFOLDER]Keyence2IQS.exe"
+              WorkingDirectory="INSTALLFOLDER"/>
+          <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+          <RegistryValue
+              Root="HKCU"
+              Key="Software/MyAppName"
+              Name="installed"
+              Type="integer"
+              Value="1"
+              KeyPath="yes"/>
+        </Component>
+      </Directory>
 			<Directory Id="ProgramFilesFolder">
 				<Directory Id="INSTALLFOLDER" Name="HylaSoft" >
           <Directory Id="LOGS" Name="LOGS">
@@ -36,10 +55,10 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			<Component Id="ProductComponent">
-        <File Id="HylaSoftFusion.exe" KeyPath="yes" Source="C:\Users\dcasu\Documents\Repositories\KeyenceIQSConnector\bin\x86\Debug\Keyence2IQS.exe"></File>
+        <File Id="HylaSoftFusion.exe" KeyPath="yes" Source="C:\Users\Andrea\developer\tmp\KeyenceIQSConnector\bin\x86\Debug\Keyence2IQS.exe"></File>
     </Component>
     <Component Id="ProductComponentConfig">
-      <File Id="HylaSoftFusion.exe.Config" KeyPath="yes" Source="C:\Users\dcasu\Documents\Repositories\KeyenceIQSConnector\bin\x86\Debug\Keyence2IQS.exe.config"></File>
+      <File Id="HylaSoftFusion.exe.Config" KeyPath="yes" Source="C:\Users\Andrea\developer\tmp\KeyenceIQSConnector\bin\x86\Debug\Keyence2IQS.exe.config"></File>
     </Component>
 		</ComponentGroup>
 	</Fragment>
