@@ -70,6 +70,7 @@ namespace KeyenceSimulation.Managers
         return;
 
       _socketManager.SendData(messageStream);
+      _controlView.DisplayMessage(messageStream);
     }
 
     protected void SetServerStatus(Action set)

@@ -9,6 +9,8 @@ namespace KeyenceSimulation.Interfaces
 
     string ServerPort { get; set; }
 
+    void DisplayMessage(string message);
+
     ServerStatuses ServerStatus { set; }
 
     event EventHandler StartClicked;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using KeyenceSimulation.Enumerations;
 using KeyenceSimulation.Interfaces;
@@ -7,10 +8,14 @@ namespace KeyenceSimulation.Forms
 {
   public partial class SimulationControl : Form, ISimulationControlView
   {
+    protected List<string> _infoBoxMessages;
+
     public SimulationControl()
     {
       InitializeComponent();
       WireEvents();
+
+      _infoBoxMessages = new List<string>();
     }
 
     #region ISimulationControlView Implementation
@@ -35,6 +40,15 @@ namespace KeyenceSimulation.Forms
         StartButton.Enabled = !value;
         StopButton.Enabled = value;
       }
+    }
+
+    public void DisplayMessage(string message)
+    {
+      _infoBoxMessages.Clear();
+      _infoBoxMessages.AddRange(message.Split(Environment.NewLine.ToCharArray()[0]));
+
+      InfoBox.DataSource = _infoBoxMessages;
+      InfoBox.Update();
     }
 
     public ServerStatuses ServerStatus
