@@ -22,6 +22,7 @@ namespace Keyence2IQS
     /// </summary>
     public partial class dlgShift : Form
     {
+        static string logPath = dlgMain.logPath;
         /// <summary>A list of all processes that can be selected.</summary>
         private ComboBox cbList;
         /// <summary>This window's "OK" button.</summary>
@@ -50,9 +51,9 @@ namespace Keyence2IQS
                 }
                 catch (Exception ex)
                 {
-                    File.AppendAllText("Log.txt", DateTime.Now + ": " + ex.Message + Environment.NewLine);
+                    File.AppendAllText(logPath, DateTime.Now + ": " + ex.Message + Environment.NewLine);
                     if (ex.InnerException != null)
-                        File.AppendAllText("Log.txt", DateTime.Now + ": " + ex.InnerException.Message + Environment.NewLine);
+                        File.AppendAllText(logPath, DateTime.Now + ": " + ex.InnerException.Message + Environment.NewLine);
                     //Assumes Process Names do not have ";" in them.
                     ConfigurationManager.AppSettings["Proc"].Split(';').OrderBy(i => i).ToList().ForEach(i => cbList.Items.Add(i));
                 }
