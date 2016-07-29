@@ -50,16 +50,7 @@ namespace KeyenceSimulation.Managers
     {
       if (SocketStatus == ServerStatuses.Stopped) return;
 
-      if (SocketStatus == ServerStatuses.Connected || ConnectedSocket != null)
-      {
-        if(ConnectedSocket.Connected) ConnectedSocket.Shutdown(SocketShutdown.Both);
-        ConnectedSocket.Close();
-      }
-
-      if(_socket.Connected) _socket.Shutdown(SocketShutdown.Both);
-      if(_socket.Blocking) _socket.Close();
-
-      SocketStatus = ServerStatuses.Stopped;
+      KillListener();
       _socketThread.Abort();
     }
 
@@ -129,18 +120,31 @@ namespace KeyenceSimulation.Managers
       if (SocketStatus == ServerStatuses.Stopped)
         return;
 
-      ConnectedSocket = listener.EndAccept(result);
-      SocketStatus = ServerStatuses.Connected;
+      try
+      {
+        ConnectedSocket = listener.EndAccept(result);
+        SocketStatus = ServerStatuses.Connected;
+      }
+      catch
+      {
+        KillListener();
+      }
     }
 
     protected void KillListener()
     {
-      if (ConnectedSocket == null || SocketStatus != ServerStatuses.Connected) return;
+      KillSocket(ConnectedSocket);
+      KillSocket(_socket);
 
-      ConnectedSocket.Shutdown(SocketShutdown.Both);
-      ConnectedSocket.Close();
+      SocketStatus = ServerStatuses.Stopped;
+    }
 
-      SocketStatus = ServerStatuses.Running;
+    protected void KillSocket(Socket socket)
+    {
+      if (socket == null) return;
+      
+      try { socket.Shutdown(SocketShutdown.Both);} catch {}
+      try { socket.Close();} catch {}
     }
 
     protected IPAddress GetAddress(string ipAddress)
