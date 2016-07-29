@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using KeyenceSimulation.Config;
+using KeyenceSimulation.Enumerations;
 using KeyenceSimulation.Interfaces;
 
 namespace KeyenceSimulation.Managers
@@ -12,52 +12,74 @@ namespace KeyenceSimulation.Managers
   {
     protected const int MaxSocketBacklog = 10;
 
-    protected readonly SimulationConfig _config;
     protected readonly string _hostname;
     protected readonly IPHostEntry _hostEntry;
-    protected readonly IPEndPoint _localEndpoint;
-    protected readonly Socket _socket;
-    protected readonly Thread _socketThread;
+    protected IPEndPoint _localEndpoint;
+    protected TcpListener _socket;
+    protected Thread _socketThread;
+    private ServerStatuses _socketStatus;
 
-    protected bool IsConnected { get; set; }
+    protected Socket ConnectedSocket { get; private set; }
 
-    public SocketManager(SimulationConfig config)
+    public SocketManager()
     {
-      _config = config;
       _hostname = Dns.GetHostName();
       _hostEntry = Dns.GetHostEntry(_hostname);
-      
-      var address = GetAddress();
-      var port = config.Port;
-      
-      _localEndpoint = new IPEndPoint(address, port);
-      _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-      _socketThread = new Thread(StartListening);
-      IsConnected = false;
+      SocketStatus = ServerStatuses.Stopped;
     }
 
-    public void Connect()
+    public void Connect(int port, string ipAddress)
     {
+      if (SocketStatus != ServerStatuses.Stopped) return;
+
+      var address = GetAddress(ipAddress);
+      _localEndpoint = new IPEndPoint(address, port);
+      _socket = new TcpListener(_localEndpoint);
+      _socketThread = new Thread(StartListening);
+
+      SocketStatus = ServerStatuses.Running;
       _socketThread.Start();
     }
 
     public void Disconnect()
     {
+      if (SocketStatus == ServerStatuses.Stopped) return;
+
+      if (SocketStatus == ServerStatuses.Connected || ConnectedSocket != null)
+      {
+        SocketStatus = ServerStatuses.Running;
+        while(SocketStatus != ServerStatuses.Stopped) Thread.Sleep(500);
+      }
+
+      _socket.Stop();
       _socketThread.Abort();
-      IsConnected = false;
+
+      SocketStatus = ServerStatuses.Stopped;
     }
 
-    public event EventHandler<Socket> DataRequested;
+    public event EventHandler<ServerStatuses> SocketStatusChanged;
 
-    public void SendData(Socket connection, string data)
+    public void SendData(string data)
     {
-      if (!IsConnected) return;
+      Socket connection;
+      if (SocketStatus != ServerStatuses.Connected 
+        || (connection = ConnectedSocket) == null
+        || !connection.Connected) return;
 
       var dataEncoding = Encoding.UTF8.GetBytes(data);
       connection.Send(dataEncoding);
     }
 
+
+    public ServerStatuses SocketStatus
+    {
+      get { return _socketStatus; }
+      protected set
+      {
+        if(_socketStatus != value) TriggerSocketStatusChanged(_socketStatus = value);
+      }
+    }
 
     protected bool IsIpv4Address(IPAddress address)
     {
@@ -66,38 +88,32 @@ namespace KeyenceSimulation.Managers
 
     protected void StartListening()
     {
-      _socket.Bind(_localEndpoint);
-      _socket.Listen(MaxSocketBacklog);
-      IsConnected = true;
+      _socket.Start();
 
-      while (true)
-      {
-        var connection = _socket.Accept();
-        
-        TriggerDataRequested(connection);
+      ConnectedSocket = _socket.AcceptSocket();
+      SocketStatus = ServerStatuses.Connected;
 
-        connection.Shutdown(SocketShutdown.Both);
-        connection.Close();
-      }
+      while (SocketStatus == ServerStatuses.Connected) Thread.Sleep(500);
+
+      ConnectedSocket.Close();
+      SocketStatus = ServerStatuses.Stopped;
     }
 
-    protected IPAddress GetAddress()
+    protected IPAddress GetAddress(string ipAddress)
     {
       const int loopback = 0x0100007F;
       var defaultAddress = new IPAddress(loopback);
 
-      string configIpAddress;
       IPAddress parsedIp;
-      return _config == null
-        || string.IsNullOrEmpty(configIpAddress = _config.IpAddress)
-        || !IPAddress.TryParse(configIpAddress, out parsedIp)
+      return string.IsNullOrEmpty(ipAddress)
+        || !IPAddress.TryParse(ipAddress, out parsedIp)
           ? defaultAddress
           : parsedIp;
     }
 
-    protected void TriggerDataRequested(Socket connection)
+    protected void TriggerSocketStatusChanged(ServerStatuses status)
     {
-      if(DataRequested != null) DataRequested(this, connection);
+      if (SocketStatusChanged != null) SocketStatusChanged(this, status);
     }
   }
 }

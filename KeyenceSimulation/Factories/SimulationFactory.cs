@@ -19,7 +19,7 @@ namespace KeyenceSimulation.Factories
 
     public static ISocketManager SocketManager
     {
-      get { return _socketManager ?? (_socketManager = new SocketManager(Config)); }
+      get { return _socketManager ?? (_socketManager = new SocketManager()); }
     }
 
     public static IKeyenceMessageManager MessageManager
@@ -27,12 +27,9 @@ namespace KeyenceSimulation.Factories
       get { return _messageManager ?? (_messageManager = new KeyenceMessageManager()); }
     }
 
-    public static ISimulationManager SimulationManager
+    public static ISimulationManager BuildSimulationManager(ISimulationControlView controlView)
     {
-      get
-      {
-        return _simulationManager ?? (_simulationManager = new SimulationManager(Config, SocketManager, MessageManager));
-      }
+        return _simulationManager ?? (_simulationManager = new SimulationManager(Config, SocketManager, MessageManager, controlView));
     }
 
     public static SimulationConfig Config

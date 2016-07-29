@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Net.Sockets;
+using KeyenceSimulation.Enumerations;
 
 namespace KeyenceSimulation.Interfaces
 {
   public interface ISocketManager
   {
-    void Connect();
+    void Connect(int port, string ipAddress);
     
     void Disconnect();
 
-    event EventHandler<Socket> DataRequested;
+    event EventHandler<ServerStatuses> SocketStatusChanged;
 
-    void SendData(Socket connection, string data);
+    void SendData(string data);
+
+    ServerStatuses SocketStatus { get; }
+
   }
 }

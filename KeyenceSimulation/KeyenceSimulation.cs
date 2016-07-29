@@ -1,32 +1,45 @@
 ﻿using System;
 using System.Windows.Forms;
 using KeyenceSimulation.Factories;
+using KeyenceSimulation.Forms;
+using KeyenceSimulation.Interfaces;
 
 namespace KeyenceSimulation
 {
   static class KeyenceSimulation
   {
+
+    private static ISimulationManager _simulationManager;
+
     /// <summary>
     /// The main entry point for the application.
     /// </summary>
     [STAThread]
     static void Main()
     {
-      StartSimulation();
-      RunApplication();
-    }
+      try
+      {
+        RunApplication();
+      }
+      catch
+      {
+        // TODO: Error reporting or validation.
+        if(_simulationManager != null)
+          _simulationManager.Stop();
 
-    private static void StartSimulation()
-    {
-      var manager = SimulationFactory.SimulationManager;
-      manager.Start();
+        Application.Exit();
+      }
     }
 
     private static void RunApplication()
     {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run();
+
+      var controlView = new SimulationControl();
+      _simulationManager = SimulationFactory.BuildSimulationManager(controlView);
+      
+      Application.Run(controlView);
     }
   }
 }
