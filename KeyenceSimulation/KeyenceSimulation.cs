@@ -24,7 +24,10 @@ namespace KeyenceSimulation
       catch
       {
         // TODO: Error reporting or validation.
-        if(_simulationManager != null)
+      }
+      finally
+      {
+        if (_simulationManager != null)
           _simulationManager.Stop();
 
         Application.Exit();

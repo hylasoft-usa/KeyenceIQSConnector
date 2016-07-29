@@ -15,7 +15,7 @@ namespace KeyenceSimulation.Managers
     protected readonly string _hostname;
     protected readonly IPHostEntry _hostEntry;
     protected IPEndPoint _localEndpoint;
-    protected TcpListener _socket;
+    protected Socket _socket;
     protected Thread _socketThread;
     private ServerStatuses _socketStatus;
 
@@ -33,29 +33,34 @@ namespace KeyenceSimulation.Managers
     {
       if (SocketStatus != ServerStatuses.Stopped) return;
 
+      if(_socket != null && _socket.Connected)
+        _socket.Close();
+
       var address = GetAddress(ipAddress);
       _localEndpoint = new IPEndPoint(address, port);
-      _socket = new TcpListener(_localEndpoint);
+      _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
       _socketThread = new Thread(StartListening);
 
       SocketStatus = ServerStatuses.Running;
       _socketThread.Start();
     }
-
+    
     public void Disconnect()
     {
       if (SocketStatus == ServerStatuses.Stopped) return;
 
       if (SocketStatus == ServerStatuses.Connected || ConnectedSocket != null)
       {
-        SocketStatus = ServerStatuses.Running;
-        while(SocketStatus != ServerStatuses.Stopped) Thread.Sleep(500);
+        if(ConnectedSocket.Connected) ConnectedSocket.Shutdown(SocketShutdown.Both);
+        ConnectedSocket.Close();
       }
 
-      _socket.Stop();
-      _socketThread.Abort();
+      if(_socket.Connected) _socket.Shutdown(SocketShutdown.Both);
+      if(_socket.Blocking) _socket.Close();
 
       SocketStatus = ServerStatuses.Stopped;
+      _socketThread.Abort();
     }
 
     public event EventHandler<ServerStatuses> SocketStatusChanged;
@@ -67,8 +72,17 @@ namespace KeyenceSimulation.Managers
         || (connection = ConnectedSocket) == null
         || !connection.Connected) return;
 
+
       var dataEncoding = Encoding.UTF8.GetBytes(data);
-      connection.Send(dataEncoding);
+
+      try
+      {
+        connection.Send(dataEncoding);
+      }
+      catch
+      {
+        KillListener();
+      }
     }
 
 
@@ -88,15 +102,45 @@ namespace KeyenceSimulation.Managers
 
     protected void StartListening()
     {
-      _socket.Start();
+      try
+      {
+        _socket.Bind(_localEndpoint);
+        _socket.Listen(100);
 
-      ConnectedSocket = _socket.AcceptSocket();
+        while (true)
+        {
+          _socket.BeginAccept(AcceptConnection, _socket);
+          while (ConnectedSocket == null || ConnectedSocket.Poll(-1, SelectMode.SelectWrite))
+          {
+            Thread.Sleep(500);
+          }
+
+          Disconnect();
+        }
+      }
+      catch
+      {
+      }
+    }
+
+    protected void AcceptConnection(IAsyncResult result)
+    {
+      var listener = (Socket)result.AsyncState;
+      if (SocketStatus == ServerStatuses.Stopped)
+        return;
+
+      ConnectedSocket = listener.EndAccept(result);
       SocketStatus = ServerStatuses.Connected;
+    }
 
-      while (SocketStatus == ServerStatuses.Connected) Thread.Sleep(500);
+    protected void KillListener()
+    {
+      if (ConnectedSocket == null || SocketStatus != ServerStatuses.Connected) return;
 
+      ConnectedSocket.Shutdown(SocketShutdown.Both);
       ConnectedSocket.Close();
-      SocketStatus = ServerStatuses.Stopped;
+
+      SocketStatus = ServerStatuses.Running;
     }
 
     protected IPAddress GetAddress(string ipAddress)
