@@ -320,6 +320,7 @@ namespace Keyence2IQS
         private void bnStop_Click(object sender, EventArgs e)
         {
             collect_data = false;
+            send_socket.Shutdown(SocketShutdown.Both);
             send_socket.Close();
         }
 
