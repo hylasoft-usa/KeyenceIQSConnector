@@ -22,6 +22,7 @@ namespace Keyence2IQS
     /// </summary>
     public class dlgMain : Form
     {
+        public static string logPath = "LOGS\\Log.txt";
         //Add class variables.
         String Log_String;
         bool SetVisible = false;
@@ -79,7 +80,7 @@ namespace Keyence2IQS
             int cur_test = 0;//Used to keep track of test number during "IT" lines.
             foreach (String s in Lines)
             {
-                DATA = DATA.Remove(0, s.Length).Trim(NL.ToCharArray());
+                DATA = DATA.Remove(0, s.Length).Trim(NL.ToCharArray()); //removed what is being read
                 String[] Fields = (ConfigurationManager.AppSettings["Delimiter"].Equals("\\t"))
                         ? s.Replace('\t', ';').Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
                         : s.Split(new[] { ConfigurationManager.AppSettings["Delimiter"] }, StringSplitOptions.RemoveEmptyEntries);
@@ -215,7 +216,9 @@ namespace Keyence2IQS
             Back_Thread.RunWorkerCompleted += Stop_Collection;
             Back_Thread.ProgressChanged += Add_To_List;
             if (ConfigurationManager.AppSettings["TestIQSConnection"].ToLower().Equals("true"))
+            {
                 bnProc.Visible = true;
+            }
         }
 
         /// <summary>
@@ -339,7 +342,7 @@ namespace Keyence2IQS
         private void bnStart_Click(object sender, EventArgs e)
         {
             lbLog.Items.Add(DateTime.Now + ": Attempting to collect data from Keyence Machine.");
-            File.AppendAllText("Log.txt", DateTime.Now + ": Attempting to collect data from Keyence Machine." + NL);
+            File.AppendAllText(logPath, DateTime.Now + ": Attempting to collect data from Keyence Machineaaa." + NL);
             Back_Thread.RunWorkerAsync();
             bnStart.Visible = false;
             bnStop.Visible = true;
@@ -380,7 +383,7 @@ namespace Keyence2IQS
         private void Stop_Collection(object sender, RunWorkerCompletedEventArgs e)
         {
             lbLog.Items.Add(DateTime.Now + ": Data collection halted.");
-            File.AppendAllText("Log.txt", DateTime.Now + ": Data collection halted." + NL);
+            File.AppendAllText(logPath, DateTime.Now + ": Data collection halted." + NL);
             bnStop.Visible = false;
             bnStart.Visible = true;
             bnQuit.Enabled = true;
@@ -398,10 +401,10 @@ namespace Keyence2IQS
                 if (System.Configuration.ConfigurationManager.AppSettings["LogSetting"].Equals("All") || !Log_String.Contains(NL))
                 {
                     lbLog.Items.Add(Log_String);
-                    File.AppendAllText("log.txt", Log_String + NL);
+                    File.AppendAllText(logPath, Log_String + NL);
                 }
                 else
-                    File.AppendAllText("log.txt", Log_String);
+                    File.AppendAllText(logPath, Log_String);
             }
         }
 
@@ -545,7 +548,7 @@ namespace Keyence2IQS
             "                              --------------------EVENT LOG--------------------"});
             this.lbLog.Location = new System.Drawing.Point(168, 15);
             this.lbLog.Name = "lbLog";
-            this.lbLog.Size = new System.Drawing.Size(372, 340);
+            this.lbLog.Size = new System.Drawing.Size(532, 340);
             this.lbLog.TabIndex = 2;
             this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
             // 
@@ -598,7 +601,7 @@ namespace Keyence2IQS
             // 
             // dlgMain
             // 
-            this.ClientSize = new System.Drawing.Size(552, 378);
+            this.ClientSize = new System.Drawing.Size(712, 378);
             this.Controls.Add(this.bnPartGroup);
             this.Controls.Add(this.bnProc);
             this.Controls.Add(this.bnStop);
@@ -616,7 +619,7 @@ namespace Keyence2IQS
 
         private void bnProc_Click(object sender, EventArgs e)
         {
-            var prcs = new dlgShift();
+            var prcs = new dlgShift();//TODO: why not dlgProc??
             prcs.ShowDialog();
         }
 
