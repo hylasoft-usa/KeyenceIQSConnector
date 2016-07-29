@@ -21,14 +21,17 @@
       <ComponentRef Id="Logs"/>
     </Feature>
     <Feature Id="DesktopShortcut" Title="SetupProject1" Level="1">
-      <ComponentRef Id="AppkicationShortcutDesktop" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
-	</Product>
-  
+
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="InstallValidate" Sequence="execute">NOT Installed</SetProperty>
+
+  </Product>
+
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="DesktopFolder" Name="Desktop">
-        <Component Id="AppkicationShortcutDesktop" Guid="*">
+        <Component Id="ApplicationShortcutDesktop" Guid="*">
           <Shortcut Id="ApplicationDesktopShortcut"
               Name="HylasoftFusion"
               Description="Comment field in your shortcut"
@@ -80,4 +83,6 @@
     </Component>
 		</ComponentGroup>
 	</Fragment>
+
+
 </Wix>

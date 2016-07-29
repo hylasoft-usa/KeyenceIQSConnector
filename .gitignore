@@ -216,4 +216,5 @@ FakesAssemblies/
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
 
-ext_dependencies/soa_client
+# Log File
+Log.txt
