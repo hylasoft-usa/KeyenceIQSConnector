@@ -50,11 +50,19 @@
   <ItemGroup>
     <Compile Include="Config\ConfigurationReader.cs" />
     <Compile Include="Config\SimulationConfig.cs" />
+    <Compile Include="Dto\KeyenceBody.cs" />
+    <Compile Include="Dto\KeyenceFooter.cs" />
+    <Compile Include="Dto\KeyenceHeader.cs" />
+    <Compile Include="Dto\KeyenceLine.cs" />
     <Compile Include="Dto\KeyenceMessage.cs" />
+    <Compile Include="Dto\KeyenceLineSegment.cs" />
+    <Compile Include="Dto\KeyenceSnapshot.cs" />
     <Compile Include="Factories\SimulationFactory.cs" />
     <Compile Include="Interfaces\IConfigurationReader.cs" />
     <Compile Include="Interfaces\IKeyenceMessage.cs" />
+    <Compile Include="Interfaces\IKeyenceMessageBody.cs" />
     <Compile Include="Interfaces\IKeyenceMessageManager.cs" />
+    <Compile Include="Interfaces\IKeyenceMessageSegment.cs" />
     <Compile Include="Interfaces\ISimulationManager.cs" />
     <Compile Include="Interfaces\ISocketManager.cs" />
     <Compile Include="KeyenceSimulation.cs" />
