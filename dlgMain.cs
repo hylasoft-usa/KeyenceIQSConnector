@@ -22,7 +22,7 @@ namespace Keyence2IQS
     /// </summary>
     public class dlgMain : Form
     {
-        public static string logPath = "LOGS\\Log.txt";
+        public static string logPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\HylaSoft\\Log.txt"; //"LOGS//Log.txt"
         //Add class variables.
         String Log_String;
         bool SetVisible = false;
