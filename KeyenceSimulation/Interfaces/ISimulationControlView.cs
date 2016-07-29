@@ -14,5 +14,7 @@ namespace KeyenceSimulation.Interfaces
     event EventHandler StartClicked;
 
     event EventHandler StopClicked;
+
+    event EventHandler SendClicked;
   }
 }

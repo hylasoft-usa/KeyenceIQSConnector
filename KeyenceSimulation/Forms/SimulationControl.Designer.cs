@@ -37,6 +37,7 @@
       this.IpInput = new System.Windows.Forms.TextBox();
       this.StopButton = new System.Windows.Forms.Button();
       this.StartButton = new System.Windows.Forms.Button();
+      this.SendButton = new System.Windows.Forms.Button();
       this.MainPanel.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -45,6 +46,7 @@
       this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.MainPanel.Controls.Add(this.SendButton);
       this.MainPanel.Controls.Add(this.PortLabel);
       this.MainPanel.Controls.Add(this.IpLabel);
       this.MainPanel.Controls.Add(this.StatusLabel);
@@ -110,7 +112,7 @@
       // 
       // StopButton
       // 
-      this.StopButton.Location = new System.Drawing.Point(350, 198);
+      this.StopButton.Location = new System.Drawing.Point(193, 198);
       this.StopButton.Name = "StopButton";
       this.StopButton.Size = new System.Drawing.Size(110, 38);
       this.StopButton.TabIndex = 1;
@@ -125,6 +127,15 @@
       this.StartButton.TabIndex = 0;
       this.StartButton.Text = "Start Service";
       this.StartButton.UseVisualStyleBackColor = true;
+      // 
+      // SendButton
+      // 
+      this.SendButton.Location = new System.Drawing.Point(350, 198);
+      this.SendButton.Name = "SendButton";
+      this.SendButton.Size = new System.Drawing.Size(110, 38);
+      this.SendButton.TabIndex = 8;
+      this.SendButton.Text = "Send Message";
+      this.SendButton.UseVisualStyleBackColor = true;
       // 
       // SimulationControl
       // 
@@ -151,5 +162,6 @@
     private System.Windows.Forms.TextBox StatusInput;
     private System.Windows.Forms.TextBox PortInput;
     private System.Windows.Forms.TextBox IpInput;
+    private System.Windows.Forms.Button SendButton;
   }
 }

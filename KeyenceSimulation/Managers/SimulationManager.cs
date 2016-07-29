@@ -49,6 +49,7 @@ namespace KeyenceSimulation.Managers
 
       _controlView.StartClicked += (o, e) => SetServerStatus(Start);
       _controlView.StopClicked += (o, e) => SetServerStatus(Stop);
+      _controlView.SendClicked += SendSimultion;
 
       _controlView.ServerIp = _config.IpAddress;
       _controlView.ServerPort = _config.Port.ToString("D");
@@ -60,7 +61,7 @@ namespace KeyenceSimulation.Managers
       _controlView.ServerStatus = status;
     }
 
-    protected void SendSimultion(object sender, Socket connection)
+    protected void SendSimultion(object sender, EventArgs e)
     {
       IKeyenceMessage message;
       string messageStream;

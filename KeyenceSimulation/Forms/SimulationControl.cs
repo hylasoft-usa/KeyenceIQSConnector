@@ -34,10 +34,6 @@ namespace KeyenceSimulation.Forms
 
         StartButton.Enabled = !value;
         StopButton.Enabled = value;
-
-        StatusInput.Text = value
-          ? "Running"
-          : "Stopped";
       }
     }
 
@@ -52,6 +48,7 @@ namespace KeyenceSimulation.Forms
 
     public event EventHandler StartClicked;
     public event EventHandler StopClicked;
+    public event EventHandler SendClicked;
     #endregion
 
     #region Protected Methods
@@ -59,6 +56,7 @@ namespace KeyenceSimulation.Forms
     {
       StopButton.Click += TriggerStop;
       StartButton.Click += TriggerStart;
+      SendButton.Click += TriggerSend;
     }
 
     protected void TriggerStart(object sender, EventArgs e)
@@ -71,6 +69,12 @@ namespace KeyenceSimulation.Forms
     {
       if(StopClicked != null)
         StopClicked(this, e);
+    }
+
+    protected void TriggerSend(object sender, EventArgs e)
+    {
+      if(SendClicked != null)
+        SendClicked(this, e);
     }
 
     protected void SetInputAccess(bool isEnabled)
@@ -93,6 +97,8 @@ namespace KeyenceSimulation.Forms
     protected void ThreadSafeUpdateServiceStatus(ServerStatuses status)
     {
       var serverRunning = status == ServerStatuses.Running || status == ServerStatuses.Connected;
+      SendButton.Enabled = status == ServerStatuses.Connected;
+
       ServiceRunning = serverRunning;
       StatusInput.Text = status.ToString();
     }
