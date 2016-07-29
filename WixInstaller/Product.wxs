@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="HylaSoftFusion_install" Language="1033" Version="1.0.0.0" Manufacturer="HylaSoft" UpgradeCode="46dcb397-c6bd-4f30-83ac-1af1606d0fa4">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="HylaSoftFusion_install" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+    <Feature Id="Logs" Title="LogsFolder" Level="1">
+      <ComponentRef Id="Logs"/>
+    </Feature>
+  
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="HylaSoft" >
+          <Directory Id="LOGS" Name="LOGS">
+            <Component Id="Logs" Guid="85DAD4AE-6404-4A40-B713-43538091B9D3"
+            SharedDllRefCount="no" KeyPath="no" NeverOverwrite="no" Permanent="no" Transitive="no"
+            Win64="no" Location="either">
+              <CreateFolder>
+                <Permission User="Everyone" GenericAll="yes" />
+              </CreateFolder>
+            </Component>
+          </Directory>
+        </Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="ProductComponent">
+        <File Id="HylaSoftFusion.exe" KeyPath="yes" Source="C:\Users\dcasu\Documents\Repositories\KeyenceIQSConnector\bin\x86\Debug\Keyence2IQS.exe"></File>
+    </Component>
+    <Component Id="ProductComponentConfig">
+      <File Id="HylaSoftFusion.exe.Config" KeyPath="yes" Source="C:\Users\dcasu\Documents\Repositories\KeyenceIQSConnector\bin\x86\Debug\Keyence2IQS.exe.config"></File>
+    </Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
