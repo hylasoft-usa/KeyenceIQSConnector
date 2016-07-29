@@ -2,8 +2,16 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Product Id="*" Name="HylaSoftFusion_install" Language="1033" Version="1.0.0.0" Manufacturer="HylaSoft" UpgradeCode="46dcb397-c6bd-4f30-83ac-1af1606d0fa4">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
-
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    
+    <!--<UIRef Id="WixUI_Minimal"/>-->
+    <!--<UI Id='MyMinimal'>
+      <UIRef Id="WixUI_Mondo" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg"  Order="1">1</Publish>
+      <Property Id="ARPNOMODIFY" Value="1" />
+    </UI>-->
+		
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab = "yes"/>
 
 		<Feature Id="ProductFeature" Title="HylaSoftFusion_install" Level="1">
@@ -16,7 +24,7 @@
       <ComponentRef Id="AppkicationShortcutDesktop" />
     </Feature>
 	</Product>
-
+  
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="DesktopFolder" Name="Desktop">
