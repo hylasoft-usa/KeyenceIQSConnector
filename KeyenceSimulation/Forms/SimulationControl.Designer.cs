@@ -29,6 +29,7 @@
     private void InitializeComponent()
     {
       this.MainPanel = new System.Windows.Forms.Panel();
+      this.SendButton = new System.Windows.Forms.Button();
       this.PortLabel = new System.Windows.Forms.Label();
       this.IpLabel = new System.Windows.Forms.Label();
       this.StatusLabel = new System.Windows.Forms.Label();
@@ -37,7 +38,6 @@
       this.IpInput = new System.Windows.Forms.TextBox();
       this.StopButton = new System.Windows.Forms.Button();
       this.StartButton = new System.Windows.Forms.Button();
-      this.SendButton = new System.Windows.Forms.Button();
       this.MainPanel.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -59,6 +59,15 @@
       this.MainPanel.Name = "MainPanel";
       this.MainPanel.Size = new System.Drawing.Size(515, 257);
       this.MainPanel.TabIndex = 0;
+      // 
+      // SendButton
+      // 
+      this.SendButton.Location = new System.Drawing.Point(308, 198);
+      this.SendButton.Name = "SendButton";
+      this.SendButton.Size = new System.Drawing.Size(169, 38);
+      this.SendButton.TabIndex = 8;
+      this.SendButton.Text = "Send Message";
+      this.SendButton.UseVisualStyleBackColor = true;
       // 
       // PortLabel
       // 
@@ -112,7 +121,7 @@
       // 
       // StopButton
       // 
-      this.StopButton.Location = new System.Drawing.Point(193, 198);
+      this.StopButton.Location = new System.Drawing.Point(161, 198);
       this.StopButton.Name = "StopButton";
       this.StopButton.Size = new System.Drawing.Size(110, 38);
       this.StopButton.TabIndex = 1;
@@ -121,21 +130,12 @@
       // 
       // StartButton
       // 
-      this.StartButton.Location = new System.Drawing.Point(41, 198);
+      this.StartButton.Location = new System.Drawing.Point(19, 198);
       this.StartButton.Name = "StartButton";
       this.StartButton.Size = new System.Drawing.Size(110, 38);
       this.StartButton.TabIndex = 0;
       this.StartButton.Text = "Start Service";
       this.StartButton.UseVisualStyleBackColor = true;
-      // 
-      // SendButton
-      // 
-      this.SendButton.Location = new System.Drawing.Point(350, 198);
-      this.SendButton.Name = "SendButton";
-      this.SendButton.Size = new System.Drawing.Size(110, 38);
-      this.SendButton.TabIndex = 8;
-      this.SendButton.Text = "Send Message";
-      this.SendButton.UseVisualStyleBackColor = true;
       // 
       // SimulationControl
       // 
