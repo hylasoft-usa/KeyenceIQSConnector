@@ -42,7 +42,7 @@
           <RemoveFolder Id="DesktopFolder" On="uninstall"/>
           <RegistryValue
               Root="HKCU"
-              Key="Software/MyAppName"
+              Key="Software/HylaSoftFusion"
               Name="installed"
               Type="integer"
               Value="1"
@@ -55,13 +55,13 @@
 			</Directory>
       <Directory Id="AppDataFolder">
         <Directory Id="LOGS" Name="HylaSoft">
-          <Component Id="Logs" Guid="85DAD4AE-6404-4A40-B713-43538091B9D3"
+          <Component Id="Logs" Guid="d49a59e8-a950-4131-94c4-2fa630b1559c"
           SharedDllRefCount="no" KeyPath="no" NeverOverwrite="no" Permanent="no" Transitive="no" Location="either">
             <RemoveFolder Id="LOGS" On="uninstall"/>
             <RemoveFile Id="PurgeAppFolder" Name="*.*" On="uninstall" />
             <RegistryValue
               Root="HKCU"
-              Key="Software/MyAppName"
+              Key="Software/HylaSoftFusion"
               Name="installed"
               Type="integer"
               Value="1"

@@ -49,9 +49,6 @@ namespace Keyence2IQS
         /// <summary>The program's "Quit" button"</summary>
         private Button bnQuit;
 
-        /// <summary>The program's event log.</summary>
-        private ListBox lbLog;
-
         /// <summary>The notification icon used for the program's system tray setting.</summary>
         private NotifyIcon niTray;
         private IContainer components;
@@ -61,6 +58,7 @@ namespace Keyence2IQS
         private Button bnProc;
         private Timer tm_time;
         private Button bnPartGroup;
+        private ListBox lbLog;
 
         /// <summary>A background thread that reads Keyence data and adds it to the respective IQS Database oDB.</summary>
         private BackgroundWorker Back_Thread;
@@ -517,12 +515,12 @@ namespace Keyence2IQS
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(dlgMain));
       this.bnStart = new System.Windows.Forms.Button();
       this.bnQuit = new System.Windows.Forms.Button();
-      this.lbLog = new System.Windows.Forms.ListBox();
       this.niTray = new System.Windows.Forms.NotifyIcon(this.components);
       this.bnStop = new System.Windows.Forms.Button();
       this.bnProc = new System.Windows.Forms.Button();
       this.tm_time = new System.Windows.Forms.Timer(this.components);
       this.bnPartGroup = new System.Windows.Forms.Button();
+      this.lbLog = new System.Windows.Forms.ListBox();
       this.SuspendLayout();
       // 
       // bnStart
@@ -537,6 +535,7 @@ namespace Keyence2IQS
       // 
       // bnQuit
       // 
+      this.bnQuit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.bnQuit.Location = new System.Drawing.Point(12, 334);
       this.bnQuit.Name = "bnQuit";
       this.bnQuit.Size = new System.Drawing.Size(150, 23);
@@ -544,18 +543,6 @@ namespace Keyence2IQS
       this.bnQuit.Text = "Quit";
       this.bnQuit.UseVisualStyleBackColor = true;
       this.bnQuit.Click += new System.EventHandler(this.bnQuit_Click);
-      // 
-      // lbLog
-      // 
-      this.lbLog.FormattingEnabled = true;
-      this.lbLog.HorizontalScrollbar = true;
-      this.lbLog.Items.AddRange(new object[] {
-            "                              --------------------EVENT LOG--------------------"});
-      this.lbLog.Location = new System.Drawing.Point(168, 15);
-      this.lbLog.Name = "lbLog";
-      this.lbLog.Size = new System.Drawing.Size(532, 329);
-      this.lbLog.TabIndex = 2;
-      this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
       // 
       // niTray
       // 
@@ -603,6 +590,21 @@ namespace Keyence2IQS
       this.bnPartGroup.UseVisualStyleBackColor = true;
       this.bnPartGroup.Visible = false;
       this.bnPartGroup.Click += new System.EventHandler(this.bnShiftClick);
+      // 
+      // lbLog
+      // 
+      this.lbLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lbLog.FormattingEnabled = true;
+      this.lbLog.HorizontalScrollbar = true;
+      this.lbLog.Items.AddRange(new object[] {
+            "                              --------------------EVENT LOG--------------------"});
+      this.lbLog.Location = new System.Drawing.Point(168, 15);
+      this.lbLog.Name = "lbLog";
+      this.lbLog.Size = new System.Drawing.Size(532, 329);
+      this.lbLog.TabIndex = 2;
+      this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
       // 
       // dlgMain
       // 
