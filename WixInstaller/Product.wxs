@@ -4,12 +4,12 @@
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     
     <!--<UIRef Id="WixUI_Minimal"/>-->
-    <!--<UI Id='MyMinimal'>
+    <UI Id='MyMinimal'>
       <UIRef Id="WixUI_Mondo" />
       <UIRef Id="WixUI_ErrorProgressText" />
       <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg"  Order="1">1</Publish>
       <Property Id="ARPNOMODIFY" Value="1" />
-    </UI>-->
+    </UI>
 		
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab = "yes"/>
