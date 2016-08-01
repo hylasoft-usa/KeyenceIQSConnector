@@ -25,6 +25,7 @@
     </Feature>
 
     <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="InstallValidate" Sequence="execute">NOT Installed</SetProperty>
+    <Icon Id="logo.ico" SourceFile="..\Resources\logo.ico" />
 
   </Product>
 
@@ -36,7 +37,8 @@
               Name="HylasoftFusion"
               Description="Comment field in your shortcut"
               Target="[INSTALLFOLDER]Keyence2IQS.exe"
-              WorkingDirectory="INSTALLFOLDER"/>
+              WorkingDirectory="INSTALLFOLDER" 
+              Icon="logo.ico"/>
           <RemoveFolder Id="DesktopFolder" On="uninstall"/>
           <RegistryValue
               Root="HKCU"

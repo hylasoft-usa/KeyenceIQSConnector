@@ -8,10 +8,14 @@ namespace Keyence2IQS
   /// The IQS_Table is the object containing all necessary information for inserting a measurement result into an IQS Table.
   /// This is the final result of the main method, not counting the string representation.
   /// </summary>
-  public class IQS_Table
+  public class IQS_Table : IQS
   {
+
+
     ///<summary>The list of measurements that were done.</summary>
     public List<IQS_Sample> Samples{ get; set; }
+
+    public string Process { get; set; }
 
     /// <summary>
     /// Constructor: Creates a new Table with the number of test entries equal to TestNo.  it also initializes each test in the array.

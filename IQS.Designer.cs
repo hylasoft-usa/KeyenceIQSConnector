@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+
 #pragma warning disable 1591
 
 namespace Keyence2IQS {
@@ -196,8 +198,16 @@ namespace Keyence2IQS {
                 return base.Relations;
             }
         }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+
+      public string Serial { get; set; }
+      public string Version { get; set; }
+      public string Time { get; set; }
+      public string Part { get; set; }
+      public string Lot { get; set; }
+      public string Employee { get; set; }
+      public List<Test> Tests { get; set; }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         protected override void InitializeDerivedDataSet() {
             this.BeginInit();
