@@ -558,7 +558,7 @@ namespace Keyence2IQS
             this.niTray.BalloonTipText = "Double-Click to restore.";
             this.niTray.BalloonTipTitle = "Minimized to system tray.";
             this.niTray.Icon = ((System.Drawing.Icon)(resources.GetObject("niTray.Icon")));
-            this.niTray.Text = "notifyIcon1";
+            this.niTray.Text = "HylaSoft Fusion";
             this.niTray.Visible = true;
             this.niTray.DoubleClick += new System.EventHandler(this.notifyIcon_MouseDoubleClick);
             // 
