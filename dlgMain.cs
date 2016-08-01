@@ -22,6 +22,8 @@ namespace Keyence2IQS
     /// </summary>
     public class dlgMain : Form
     {
+        public static string logFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                       "\\HylaSoft\\";
         public static string logPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\HylaSoft\\Log.txt"; //"LOGS//Log.txt"
         //Add class variables.
         String Log_String;
@@ -75,7 +77,8 @@ namespace Keyence2IQS
             bool failFlag = false;//Used to determine if a measurement failed in a given "IT" line.
             //Includes all possible units of measurement.  Used to check if unit of measurement exists in an "IT" line.
             String[] Lines = DATA.Split(new String[] { NL }, StringSplitOptions.RemoveEmptyEntries);
-            IQS_Table TABLE = new IQS_Table();
+            var TABLE = new IQS_Table();
+            TABLE.Tests = new List<Test>();
             //Check each line's identity and arguments.
             int cur_test = 0;//Used to keep track of test number during "IT" lines.
             foreach (String s in Lines)
@@ -90,40 +93,40 @@ namespace Keyence2IQS
                         TABLE = new IQS_Table();//There are always 7 more lines than there are tests in a measurement result.
                         break;
                     case "SE"://Serial Number + Version
-                        //TABLE.Serial = Fields[1];
-                        //TABLE.Version = Fields[2];
+                        TABLE.Serial = Fields[1];
+                        TABLE.Version = Fields[2];
                         break;
                     case "DA"://Timestamp
-                        //TABLE.Time = Fields[1] + " " + Fields[2];
+                        TABLE.Time = Fields[1] + " " + Fields[2];
                         break;
                     case "MS"://Part Name
-                        //TABLE.Part = Fields[1];
-                        //for (int i = 2; i < Fields.Length - 1; i++)
-                        //{
-                        //    TABLE.Part += " " + Fields[i];
-                        //}
+                        TABLE.Part = Fields[1];
+                        for (int i = 2; i < Fields.Length - 1; i++)
+                        {
+                            TABLE.Part += " " + Fields[i];
+                        }
                         break;
                     case "LO"://Lot Number
                         //TABLE.Lot = String.Empty;
-                        //if (Fields.Length > 2)
-                        //{
-                        //    TABLE.Lot += Fields[1];
-                        //    for (int i = 2; i < Fields.Length - 1; i++)
-                        //    {
-                        //        TABLE.Lot += " " + Fields[i];
-                        //    }
-                        //}
+                        if (Fields.Length > 2)
+                        {
+                            TABLE.Lot += Fields[1];
+                            for (int i = 2; i < Fields.Length - 1; i++)
+                            {
+                              TABLE.Lot += " " + Fields[i];
+                            }
+                        }
                         break;
                     case "CH"://Operator's Name
-                        //TABLE.Employee = String.Empty;
-                        //if (Fields.Length > 2)
-                        //{
-                        //    TABLE.Employee += Fields[1];
-                        //    for (int i = 2; i < Fields.Length - 1; i++)
-                        //    {
-                        //        TABLE.Employee += " " + Fields[i];
-                        //    }
-                        //}
+                        TABLE.Employee = String.Empty;
+                        if (Fields.Length > 2)
+                        {
+                            TABLE.Employee += Fields[1];
+                            for (int i = 2; i < Fields.Length - 1; i++)
+                            {
+                                TABLE.Employee += " " + Fields[i];
+                            }
+                        }
                         break;
                     case "IT"://Measurement Value
                         Test T = new Test();
@@ -132,9 +135,9 @@ namespace Keyence2IQS
                         //Field:  |Tag| TestNo| Value| Unit | Test_Name_1| ... | Test_Name_n| Target |Upper_Tolerance| Lower_Tolerance| Judgment| Checksum|
                         double t = Convert.ToDouble(Fields[size - 5]);
                         double v = -1;//Used to indicate failure.
-                        //T.Target = t;
-                        //T.USL = (Convert.ToDouble(Fields[size - 4]));
-                        //T.LSL = (Convert.ToDouble(Fields[size - 3]));
+                        T.Target = t;
+                        T.USL = (Convert.ToDouble(Fields[size - 4]));
+                        T.LSL = (Convert.ToDouble(Fields[size - 3]));
                         try
                         {
                             v = Convert.ToDouble(Fields[2]);
@@ -143,7 +146,7 @@ namespace Keyence2IQS
                         {
                             failFlag = true;
                             T.Value = v;
-                            //    T.Unit = Fields[3];
+                            T.Unit = Fields[3];
                             T.Name = Fields[4];
                             for (int i = 5; i < (Fields.Length - 5); i++)
                             {
@@ -154,10 +157,12 @@ namespace Keyence2IQS
                         {
                             cur_test++;
                             failFlag = false;
+                            TABLE.Tests.Add(T);
+
                             break;
                         }
                         T.Value = v;
-                        //T.Unit = Fields[3];
+                        T.Unit = Fields[3];
                         T.Name = Fields[4];
                         for (int i = 5; i < (Fields.Length - 5); i++)
                         {
@@ -165,9 +170,9 @@ namespace Keyence2IQS
                         }
                         if (ConfigurationManager.AppSettings["GetIQSGroups"].ToLower().Equals("false"))
                         {
-                            //    T.Group = LookupTestGroupXML(T.Name);
+                          T.Group = LookupTestGroupXML(T.Name);
                         }
-                        //TABLE.Tests.Add(T);
+                        TABLE.Tests.Add(T);
                         cur_test++;
                         break;
                     case "EN"://End of data.  Exit foreach statement.
@@ -297,7 +302,7 @@ namespace Keyence2IQS
                     }
                     else//Process selected.  Convert to CSV.
                     {
-                        //SUBGROUP.Process = TestProc;
+                        SUBGROUP.Process = TestProc;
                         Log_String = DateTime.Now + ": Converted Data to CSV file.";
                         Back_Thread.ReportProgress(1);
                         WriteSubgroup(SUBGROUP);
@@ -418,29 +423,29 @@ namespace Keyence2IQS
             StringBuilder S = new StringBuilder();
             if (ConfigurationManager.AppSettings["GetIQSGroups"].ToLower().Equals("true"))
             {
-                //var partG = LookupPartGroup(SG.Part);
-                //var prcsG = LookupProcessGroup(SG.Process);
-                //for (int i = 0; i < SG.Tests.Count; i++)//Turn each test into a CSV line.
+              //  var partG = LookupPartGroup(SG.Part);
+               // var prcsG = LookupProcessGroup(SG.Process);
+                for (int i = 0; i < SG.Tests.Count; i++)//Turn each test into a CSV line.
                 {
-                    //    Test T = SG.Tests[i];
-                    //    var testG = LookupTestGroup(T.Name);
-                    //    if (testG.Equals(string.Empty)) continue;
-                    //    S.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", (i + 1), T.Value, T.Name, T.Target, T.USL, T.LSL, testG, SG.Part, partG, SG.Process, prcsG, NL);
-                    //"Test_Number,Test_Value,Test_Name,Test_Target_Value,Test_Upper_Tolerance,Test_Lower_Tolerance,Test_Part,Test_Process,\n"
+                        Test T = SG.Tests[i];
+                       // var testG = LookupTestGroup(T.Name);
+                        if (T.Name.Equals(string.Empty)) continue;
+                        S.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", (i + 1), T.Value, T.Name, T.Target, T.USL, T.LSL, T.Name, SG.Part, SG.Part, SG.Process, SG.Process, NL);
+                    //"Test_Number,Test_Value,Test_Name,Test_Target_Value,Test_Upper_Tolerance,Test_Lower_Tolerance,Test_Part,Test_Process,\n");
                 }
             }
             else
             {
-                //for (int i = 0; i < SG.Tests.Count; i++)//Turn each test into a CSV line.
-                //{
-                //    Test T = SG.Tests[i];
-                //    if (T.Group.Equals(string.Empty)) continue;
-                //    S.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", (i + 1), T.Value, T.Name, T.Target, T.USL, T.LSL, T.Group, SG.Part, SG.Process, NL);
-                //"Test_Number,Test_Value,Test_Name,Test_Target_Value,Test_Upper_Tolerance,Test_Lower_Tolerance,Test_Part,Test_Process,\n"
-                //}
+                for (int i = 0; i < SG.Tests.Count; i++)//Turn each test into a CSV line.
+                {
+                    Test T = SG.Tests[i];
+                    if (T.Group.Equals(string.Empty)) continue;
+                    S.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", (i + 1), T.Value, T.Name, T.Target, T.USL, T.LSL, T.Group, SG.Part, SG.Process, NL);
+               // "Test_Number,Test_Value,Test_Name,Test_Target_Value,Test_Upper_Tolerance,Test_Lower_Tolerance,Test_Part,Test_Process,\n"
+                }
             }
-            //string filename = ConfigurationManager.AppSettings["Dest"].Replace("%process", SG.Process).Replace("%part", SG.Part);
-            //File.AppendAllText(filename + ".csv", S.ToString());
+            string filename = logPath + "mesaure";// ConfigurationManager.AppSettings["Dest"];//.Replace("%process", SG.Process).Replace("%part", SG.Part);
+            File.AppendAllText(filename + ".csv", S.ToString());
         }
 
         private static string LookupProcessGroup(string process)
@@ -508,113 +513,115 @@ namespace Keyence2IQS
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(dlgMain));
-            this.bnStart = new System.Windows.Forms.Button();
-            this.bnQuit = new System.Windows.Forms.Button();
-            this.lbLog = new System.Windows.Forms.ListBox();
-            this.niTray = new System.Windows.Forms.NotifyIcon(this.components);
-            this.bnStop = new System.Windows.Forms.Button();
-            this.bnProc = new System.Windows.Forms.Button();
-            this.tm_time = new System.Windows.Forms.Timer(this.components);
-            this.bnPartGroup = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            // 
-            // bnStart
-            // 
-            this.bnStart.Location = new System.Drawing.Point(12, 12);
-            this.bnStart.Name = "bnStart";
-            this.bnStart.Size = new System.Drawing.Size(150, 23);
-            this.bnStart.TabIndex = 0;
-            this.bnStart.Text = "Start";
-            this.bnStart.UseVisualStyleBackColor = true;
-            this.bnStart.Click += new System.EventHandler(this.bnStart_Click);
-            // 
-            // bnQuit
-            // 
-            this.bnQuit.Location = new System.Drawing.Point(12, 334);
-            this.bnQuit.Name = "bnQuit";
-            this.bnQuit.Size = new System.Drawing.Size(150, 23);
-            this.bnQuit.TabIndex = 1;
-            this.bnQuit.Text = "Quit";
-            this.bnQuit.UseVisualStyleBackColor = true;
-            this.bnQuit.Click += new System.EventHandler(this.bnQuit_Click);
-            // 
-            // lbLog
-            // 
-            this.lbLog.FormattingEnabled = true;
-            this.lbLog.HorizontalScrollbar = true;
-            this.lbLog.ItemHeight = 16;
-            this.lbLog.Items.AddRange(new object[] {
+      this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(dlgMain));
+      this.bnStart = new System.Windows.Forms.Button();
+      this.bnQuit = new System.Windows.Forms.Button();
+      this.lbLog = new System.Windows.Forms.ListBox();
+      this.niTray = new System.Windows.Forms.NotifyIcon(this.components);
+      this.bnStop = new System.Windows.Forms.Button();
+      this.bnProc = new System.Windows.Forms.Button();
+      this.tm_time = new System.Windows.Forms.Timer(this.components);
+      this.bnPartGroup = new System.Windows.Forms.Button();
+      this.SuspendLayout();
+      // 
+      // bnStart
+      // 
+      this.bnStart.Location = new System.Drawing.Point(12, 12);
+      this.bnStart.Name = "bnStart";
+      this.bnStart.Size = new System.Drawing.Size(150, 23);
+      this.bnStart.TabIndex = 0;
+      this.bnStart.Text = "Start";
+      this.bnStart.UseVisualStyleBackColor = true;
+      this.bnStart.Click += new System.EventHandler(this.bnStart_Click);
+      // 
+      // bnQuit
+      // 
+      this.bnQuit.Location = new System.Drawing.Point(12, 334);
+      this.bnQuit.Name = "bnQuit";
+      this.bnQuit.Size = new System.Drawing.Size(150, 23);
+      this.bnQuit.TabIndex = 1;
+      this.bnQuit.Text = "Quit";
+      this.bnQuit.UseVisualStyleBackColor = true;
+      this.bnQuit.Click += new System.EventHandler(this.bnQuit_Click);
+      // 
+      // lbLog
+      // 
+      this.lbLog.FormattingEnabled = true;
+      this.lbLog.HorizontalScrollbar = true;
+      this.lbLog.Items.AddRange(new object[] {
             "                              --------------------EVENT LOG--------------------"});
-            this.lbLog.Location = new System.Drawing.Point(168, 15);
-            this.lbLog.Name = "lbLog";
-            this.lbLog.Size = new System.Drawing.Size(532, 340);
-            this.lbLog.TabIndex = 2;
-            this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
-            // 
-            // niTray
-            // 
-            this.niTray.BalloonTipText = "Double-Click to restore.";
-            this.niTray.BalloonTipTitle = "Minimized to system tray.";
-            this.niTray.Icon = ((System.Drawing.Icon)(resources.GetObject("niTray.Icon")));
-            this.niTray.Text = "notifyIcon1";
-            this.niTray.Visible = true;
-            this.niTray.DoubleClick += new System.EventHandler(this.notifyIcon_MouseDoubleClick);
-            // 
-            // bnStop
-            // 
-            this.bnStop.Location = new System.Drawing.Point(12, 12);
-            this.bnStop.Name = "bnStop";
-            this.bnStop.Size = new System.Drawing.Size(150, 23);
-            this.bnStop.TabIndex = 3;
-            this.bnStop.Text = "Stop";
-            this.bnStop.UseVisualStyleBackColor = true;
-            this.bnStop.Visible = false;
-            this.bnStop.Click += new System.EventHandler(this.bnStop_Click);
-            // 
-            // bnProc
-            // 
-            this.bnProc.Location = new System.Drawing.Point(12, 41);
-            this.bnProc.Name = "bnProc";
-            this.bnProc.Size = new System.Drawing.Size(150, 23);
-            this.bnProc.TabIndex = 4;
-            this.bnProc.Text = "Show Processes";
-            this.bnProc.UseVisualStyleBackColor = true;
-            this.bnProc.Visible = false;
-            this.bnProc.Click += new System.EventHandler(this.bnProc_Click);
-            // 
-            // tm_time
-            // 
-            this.tm_time.Interval = 3600000;
-            this.tm_time.Tick += new System.EventHandler(this.tm_time_Tick);
-            // 
-            // bnPartGroup
-            // 
-            this.bnPartGroup.Location = new System.Drawing.Point(12, 70);
-            this.bnPartGroup.Name = "bnPartGroup";
-            this.bnPartGroup.Size = new System.Drawing.Size(150, 23);
-            this.bnPartGroup.TabIndex = 5;
-            this.bnPartGroup.Text = "Show Processes";
-            this.bnPartGroup.UseVisualStyleBackColor = true;
-            this.bnPartGroup.Visible = false;
-            this.bnPartGroup.Click += new System.EventHandler(this.bnShiftClick);
-            // 
-            // dlgMain
-            // 
-            this.ClientSize = new System.Drawing.Size(712, 378);
-            this.Controls.Add(this.bnPartGroup);
-            this.Controls.Add(this.bnProc);
-            this.Controls.Add(this.bnStop);
-            this.Controls.Add(this.lbLog);
-            this.Controls.Add(this.bnQuit);
-            this.Controls.Add(this.bnStart);
-            this.Name = "dlgMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Keyence Automatic Data Collector";
-            this.Load += new System.EventHandler(this.dlgMain_Load);
-            this.Resize += new System.EventHandler(this.frmMain_Resize);
-            this.ResumeLayout(false);
+      this.lbLog.Location = new System.Drawing.Point(168, 15);
+      this.lbLog.Name = "lbLog";
+      this.lbLog.Size = new System.Drawing.Size(532, 329);
+      this.lbLog.TabIndex = 2;
+      this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
+      // 
+      // niTray
+      // 
+      this.niTray.BalloonTipText = "Double-Click to restore.";
+      this.niTray.BalloonTipTitle = "Minimized to system tray.";
+      this.niTray.Icon = ((System.Drawing.Icon)(resources.GetObject("niTray.Icon")));
+      this.niTray.Text = "notifyIcon1";
+      this.niTray.Visible = true;
+      this.niTray.DoubleClick += new System.EventHandler(this.notifyIcon_MouseDoubleClick);
+      // 
+      // bnStop
+      // 
+      this.bnStop.Location = new System.Drawing.Point(12, 12);
+      this.bnStop.Name = "bnStop";
+      this.bnStop.Size = new System.Drawing.Size(150, 23);
+      this.bnStop.TabIndex = 3;
+      this.bnStop.Text = "Stop";
+      this.bnStop.UseVisualStyleBackColor = true;
+      this.bnStop.Visible = false;
+      this.bnStop.Click += new System.EventHandler(this.bnStop_Click);
+      // 
+      // bnProc
+      // 
+      this.bnProc.Location = new System.Drawing.Point(12, 41);
+      this.bnProc.Name = "bnProc";
+      this.bnProc.Size = new System.Drawing.Size(150, 23);
+      this.bnProc.TabIndex = 4;
+      this.bnProc.Text = "Show Processes";
+      this.bnProc.UseVisualStyleBackColor = true;
+      this.bnProc.Visible = false;
+      this.bnProc.Click += new System.EventHandler(this.bnProc_Click);
+      // 
+      // tm_time
+      // 
+      this.tm_time.Interval = 3600000;
+      this.tm_time.Tick += new System.EventHandler(this.tm_time_Tick);
+      // 
+      // bnPartGroup
+      // 
+      this.bnPartGroup.Location = new System.Drawing.Point(12, 70);
+      this.bnPartGroup.Name = "bnPartGroup";
+      this.bnPartGroup.Size = new System.Drawing.Size(150, 23);
+      this.bnPartGroup.TabIndex = 5;
+      this.bnPartGroup.Text = "Show Processes";
+      this.bnPartGroup.UseVisualStyleBackColor = true;
+      this.bnPartGroup.Visible = false;
+      this.bnPartGroup.Click += new System.EventHandler(this.bnShiftClick);
+      // 
+      // dlgMain
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+      this.ClientSize = new System.Drawing.Size(712, 378);
+      this.Controls.Add(this.bnPartGroup);
+      this.Controls.Add(this.bnProc);
+      this.Controls.Add(this.bnStop);
+      this.Controls.Add(this.lbLog);
+      this.Controls.Add(this.bnQuit);
+      this.Controls.Add(this.bnStart);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Name = "dlgMain";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+      this.Text = "HylaSoft Fusion - IQS Beam Connector";
+      this.Load += new System.EventHandler(this.dlgMain_Load);
+      this.Resize += new System.EventHandler(this.frmMain_Resize);
+      this.ResumeLayout(false);
 
         }
 

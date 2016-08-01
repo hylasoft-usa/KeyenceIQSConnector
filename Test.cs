@@ -15,5 +15,11 @@ namespace Keyence2IQS
         
         ///<summary>The actual value of this measurement.</summary>
         public double Value { get; set; }
+
+      public double Target { get; set; }
+      public double USL { get; set; }
+      public double LSL { get; set; }
+      public string Unit { get; set; }
+      public string Group { get; set; }
     }
 }
