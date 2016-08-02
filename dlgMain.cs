@@ -620,10 +620,11 @@ namespace Keyence2IQS
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "dlgMain";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-      this.Text = "HylaSoft Fusion - IQS Beam Connector";
+      this.Text = "HylaSoft Fusion - Keyence Machine Connector";
       this.Load += new System.EventHandler(this.dlgMain_Load);
       this.Resize += new System.EventHandler(this.frmMain_Resize);
       this.ResumeLayout(false);
+
         }
 
         private void bnProc_Click(object sender, EventArgs e)
